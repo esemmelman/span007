@@ -103,7 +103,7 @@ function showQuestion() {
       if (!correct) button.classList.add('incorrect');
       answerAnnouncement.textContent = `Answer: ${question.english}.`;
       document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
-      advanceTimer = setTimeout(advanceQuestion, 4000);
+      advanceTimer = setTimeout(advanceQuestion, correct ? 2500 : 4000);
     });
     answers.append(button);
   });
