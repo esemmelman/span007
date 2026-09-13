@@ -43,7 +43,11 @@ main.quiz-view{padding-top:20px}.quiz-view #quiz{margin-top:0}.lesson:disabled,.
 @media(max-width:620px){.sidebar .lesson{font-size:clamp(1.1rem,5.4vw,1.5rem);padding-inline:10px}}
 
 /* Fit practice to the browser viewport, including shorter laptop windows. */
-main.quiz-view{max-width:1500px;padding:16px clamp(16px,3vw,48px)}
+main.quiz-view{max-width:1500px;padding:16px clamp(16px,3vw,48px);min-height:100dvh;display:flex;flex-direction:column}
+.quiz-view #quiz{flex:1;display:flex;flex-direction:column}
+#quiz-question{flex:1;display:flex;flex-direction:column}
+#quiz-answers{flex:1;grid-auto-rows:1fr}
+#quiz-restart{align-self:flex-start}
 #quiz{--verb-size:clamp(1.2rem,min(3.2vw,5.5dvh),2.7rem)}
 #quiz-progress{font-size:clamp(1rem,3.5dvh,1.8rem);padding:8px 0}
 #quiz-word{margin:16px 0}
@@ -72,9 +76,10 @@ main.quiz-view{max-width:1500px;padding:16px clamp(16px,3vw,48px)}
   .sidebar .lesson{font-size:.75rem;padding:8px;min-height:44px;gap:4px}
   .sidebar .lesson span{display:none}
   main{scroll-margin-top:16px}
+  main.quiz-view{min-height:calc(100dvh - var(--sidebar-height, 180px))}
   #quiz{--quiz-sticky-top:0px;--verb-size:clamp(1.1rem,3.8dvh,1.5rem)}
   #quiz-word{margin:12px 0}
-  #quiz-answers{gap:8px}
+  #quiz-answers{gap:8px;grid-auto-rows:auto}
   .quiz-answer{padding:8px 12px;min-height:48px}
   #rules-title,#conjugations,#conjugations-title{scroll-margin-top:16px}
 }
