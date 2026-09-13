@@ -126,9 +126,9 @@ function startQuiz() {
 }
 
 function showLesson(lesson) {
-  if (lesson === 'rules' && !quizPassed) return;
+  if (['rules', 'conjugations'].includes(lesson) && !quizPassed) return;
   cancelAdvance();
-  for (const name of ['definitions', 'quiz', 'rules']) {
+  for (const name of ['definitions', 'quiz', 'rules', 'conjugations']) {
     const active = name === lesson;
     document.getElementById(name).hidden = !active;
     const link = document.getElementById(`${name}-link`);
@@ -140,9 +140,9 @@ function showLesson(lesson) {
   document.querySelector('.translation-control').hidden = lesson !== 'definitions';
   document.querySelector('main > header').hidden = lesson === 'quiz';
   document.getElementById('main-content').classList.toggle('quiz-view', lesson === 'quiz');
-  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: 'Quiz', rules: 'The Rules' }[lesson]}`;
+  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: 'Quiz', rules: 'The Rules', conjugations: 'Conjugations' }[lesson]}`;
   if (lesson === 'quiz') startQuiz();
-  else if (lesson === 'rules') document.getElementById('rules-title').focus();
+  else if (['rules', 'conjugations'].includes(lesson)) document.getElementById(`${lesson}-title`).focus();
   else document.getElementById('main-content').focus();
 }
 
@@ -174,6 +174,7 @@ restart.addEventListener('click', startQuiz);
 document.getElementById('definitions-link').addEventListener('click', () => showLesson('definitions'));
 document.getElementById('quiz-link').addEventListener('click', () => showLesson('quiz'));
 document.getElementById('rules-link').addEventListener('click', () => showLesson('rules'));
+document.getElementById('conjugations-link').addEventListener('click', () => showLesson('conjugations'));
 
 // Measure sticky elements so enlarged text and mobile navigation do not overlap.
 if (typeof ResizeObserver !== 'undefined') {
