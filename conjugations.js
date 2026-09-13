@@ -50,7 +50,8 @@ for (const verb of conjugationVerbs) {
     pair.className = 'conjugation-pair';
     const spanish = document.createElement('dt');
     spanish.lang = 'es';
-    spanish.textContent = sentence.spanish;
+    const reflexiveSentence = sentence.spanish.slice(person.spanish.length + 1);
+    spanish.textContent = reflexiveSentence.charAt(0).toLocaleUpperCase('es') + reflexiveSentence.slice(1);
     const english = document.createElement('dd');
     english.textContent = sentence.english;
     pair.append(spanish, english);
