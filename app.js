@@ -36,7 +36,9 @@ const vocabulary = Array.from(document.querySelectorAll('tbody tr'), row => ({
 }));
 const conjugationQuestions = conjugationVerbs.flatMap(verb => conjugationPeople.map(person => {
   const sentence = conjugationSentence(verb, person);
-  return { prompt: sentence.english, answer: sentence.spanish };
+  const withoutSubject = sentence.spanish.slice(person.spanish.length + 1);
+  const answer = withoutSubject.charAt(0).toLocaleUpperCase('es') + withoutSubject.slice(1);
+  return { prompt: sentence.english, answer };
 }));
 let quizType = 'quiz';
 let questionBank = vocabulary;
@@ -89,7 +91,10 @@ function showQuestion() {
   quizWord.lang = quizType === 'quiz' ? 'es' : 'en';
   quizWord.textContent = question.prompt.charAt(0).toLocaleUpperCase(quizWord.lang) + question.prompt.slice(1);
   // Exclude alternate valid translations of the same English sentence.
-  const distractors = shuffled(questionBank.filter(word => word.prompt !== question.prompt)).slice(0, 3);
+  const distractors = Array.from(new Map(
+    shuffled(questionBank.filter(word => word.prompt !== question.prompt && word.answer !== question.answer))
+      .map(word => [word.answer, word])
+  ).values()).slice(0, 3);
   answers.replaceChildren();
   shuffled([question, ...distractors]).forEach(choice => {
     const button = document.createElement('button');
