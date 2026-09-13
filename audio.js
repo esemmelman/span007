@@ -1,6 +1,7 @@
 const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
 let audioRows = [];
 let audioSession = null;
+let audioPlayback = null;
 
 function normalizeSpokenAnswer(text) {
   return text.toLocaleLowerCase('es').normalize('NFC')
@@ -12,8 +13,7 @@ function audioAnswerMatches(prompt, transcript) {
   const heard = normalizeSpokenAnswer(transcript);
   return conjugationVerbs.some(verb => conjugationPeople.some(person =>
     conjugationSentence(verb, person).english === prompt &&
-    [verb.forms[person.form], `${person.pronoun} ${verb.forms[person.form]}`]
-      .some(answer => normalizeSpokenAnswer(answer) === heard)
+    normalizeSpokenAnswer(`${person.pronoun} ${verb.forms[person.form]}`) === heard
   ));
 }
 
@@ -21,14 +21,49 @@ function updateAudioControls() {
   audioRows.forEach(row => {
     const active = audioSession?.row === row;
     row.play.disabled = !window.speechSynthesis || !!audioSession;
-    row.record.disabled = !SpeechRecognitionAPI || (!!audioSession && (!active || audioSession.stopping));
-    row.record.textContent = active ? (audioSession.stopping ? 'Checking…' : 'Stop recording') : 'Record';
+    const playing = audioPlayback?.row === row;
+    row.play.textContent = playing ? 'Stop audio' : 'Play';
+    row.play.setAttribute('aria-pressed', String(playing));
+    row.play.setAttribute('aria-label', `${playing ? 'Stop audio for' : 'Play'} sentence ${row.number}`);
+    row.record.disabled = row.correct === true || !SpeechRecognitionAPI || (!!audioSession && (!active || audioSession.stopping));
+    row.record.textContent = active ? (audioSession.stopping ? 'Checking…' : 'Stop recording') : row.correct === true ? 'Complete' : 'Record';
     row.record.setAttribute('aria-pressed', String(active));
   });
 }
 
-function stopAudioActivity() {
+function stopAudioPlayback() {
+  audioPlayback = null;
   window.speechSynthesis?.cancel();
+  updateAudioControls();
+}
+
+function playAudio(row, text, lang) {
+  stopAudioPlayback();
+  if (!window.speechSynthesis) return;
+  const utterance = new SpeechSynthesisUtterance(text);
+  const playback = { row, utterance };
+  audioPlayback = playback;
+  utterance.lang = lang;
+  utterance.rate = 0.85;
+  const finish = () => {
+    if (audioPlayback !== playback) return;
+    audioPlayback = null;
+    updateAudioControls();
+  };
+  utterance.onend = finish;
+  utterance.onerror = event => {
+    if (audioPlayback !== playback) return;
+    if (!['interrupted', 'canceled'].includes(event.error)) {
+      row.feedback.append(' Playback failed. Press Play to try again.');
+    }
+    finish();
+  };
+  updateAudioControls();
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopAudioActivity() {
+  stopAudioPlayback();
   if (audioSession) {
     const session = audioSession;
     audioSession = null;
@@ -46,6 +81,7 @@ function updateAudioScore() {
 }
 
 function recordAudioAnswer(row) {
+  if (row.correct === true) return;
   if (audioSession) {
     if (audioSession.row !== row || audioSession.stopping) return;
     audioSession.stopping = true;
@@ -53,7 +89,7 @@ function recordAudioAnswer(row) {
     updateAudioControls();
     return;
   }
-  window.speechSynthesis?.cancel();
+  stopAudioPlayback();
   const recognition = new SpeechRecognitionAPI();
   const session = { recognition, row, transcript: '', error: '', stopping: false };
   audioSession = session;
@@ -63,7 +99,7 @@ function recordAudioAnswer(row) {
   recognition.maxAlternatives = 1;
   row.feedback.textContent = 'Starting microphone…';
   recognition.onstart = () => {
-    if (audioSession === session) row.feedback.textContent = 'Listening… Say the verb, then press Stop recording.';
+    if (audioSession === session) row.feedback.textContent = 'Listening… Say the reflexive pronoun and verb, then press Stop recording.';
   };
   recognition.onresult = event => {
     if (audioSession !== session) return;
@@ -90,7 +126,12 @@ function recordAudioAnswer(row) {
       row.feedback.textContent = session.error || 'No speech was detected. Press Record to try again.';
     } else {
       row.correct = audioAnswerMatches(row.prompt, session.transcript);
-      row.feedback.textContent = `Heard: “${session.transcript}”. ${row.correct ? 'Correct! 1 / 1.' : `Not quite. 0 / 1. Answer: ${row.answer}.`} Press Record to try again.`;
+      const heard = document.createElement('strong');
+      heard.className = 'audio-heard';
+      heard.textContent = `Heard: “${session.transcript}”.`;
+      row.feedback.replaceChildren(heard);
+      row.feedback.append(row.correct ? 'Correct! 1 / 1.' : `Not quite. 0 / 1. Answer: ${row.answer}. Press Record to try again.`);
+      if (!row.correct) playAudio(row, row.answer, 'es-ES');
       row.card.dataset.result = row.correct ? 'correct' : 'incorrect';
       updateAudioScore();
     }
@@ -132,17 +173,11 @@ function startAudioQuiz() {
     const feedback = document.createElement('p');
     feedback.className = 'audio-feedback';
     feedback.setAttribute('role', 'status');
-    const row = { ...question, answer: question.answer.replace(/ los dientes\.$/, '').replace(/\.$/, ''), card, play, record, feedback, correct: null };
+    const row = { ...question, number: index + 1, answer: question.answer.replace(/ los dientes\.$/, '').replace(/\.$/, ''), card, play, record, feedback, correct: null };
     play.addEventListener('click', () => {
       if (audioSession) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(question.prompt);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.85;
-      utterance.onerror = event => {
-        if (!['interrupted', 'canceled'].includes(event.error)) feedback.textContent = 'Playback failed. Press Play to try again.';
-      };
-      window.speechSynthesis.speak(utterance);
+      if (audioPlayback?.row === row) stopAudioPlayback();
+      else playAudio(row, question.prompt, 'en-US');
     });
     record.addEventListener('click', () => recordAudioAnswer(row));
     controls.append(number, play, record);
