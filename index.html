@@ -5,23 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111c2c">
   <title>Spanish Practice · Definitions</title>
-  <link rel="stylesheet" href="styles.css?v=1.1.1">
+  <link rel="stylesheet" href="styles.css?v=1.2.0">
 </head>
 <body>
-  <a class="skip-link" href="#definitions">Skip to definitions</a>
+  <a class="skip-link" href="#main-content">Skip to lesson</a>
   <div class="app">
     <aside class="sidebar" aria-label="Lesson navigation">
       <div class="brand"><span class="brand-icon" aria-hidden="true">Aa</span><span>Spanish<br>Practice</span></div>
       <p class="sidebar-caption">YOUR LESSONS</p>
       <nav aria-label="Lessons">
         <button class="lesson active" id="definitions-link" aria-current="page" aria-controls="definitions">1. Definitions<span aria-hidden="true">↗</span></button>
+        <button class="lesson" id="quiz-link" aria-controls="quiz">2. Quiz</button>
       </nav>
       <p class="sidebar-note">Your pace.<br>Your way to learn.</p>
     </aside>
-    <main id="definitions" tabindex="-1">
+    <main id="main-content" tabindex="-1">
       <header>
         <h1>Reflexive verbs</h1>
-        <p class="version">Version 1.1.1</p>
+        <p class="version">Version 1.2.0</p>
       </header>
       <section class="controls" aria-label="Display settings">
         <div class="translation-control">
@@ -30,6 +31,7 @@
         </div>
         <div class="size-control"><label for="text-size">Text size</label><select id="text-size"><option value="standard">Large</option><option value="larger">Extra large</option><option value="largest" selected>Largest</option></select></div>
       </section>
+      <div id="definitions">
       <section class="vocabulary" aria-labelledby="list-title">
         <div class="list-heading"><h2 id="list-title">1. Definitions</h2><span>10 verbs</span></div>
         <table>
@@ -50,9 +52,22 @@
         </table>
       </section>
       <p class="tip"><strong>A little clue:</strong> All these verbs end in <span lang="es">-se</span>, which marks their reflexive form.</p>
+      </div>
+      <section id="quiz" aria-labelledby="quiz-title" hidden>
+        <h2 id="quiz-title">2. Quiz</h2>
+        <p id="quiz-progress"></p>
+        <div id="quiz-question">
+          <p>Choose the English meaning.</p>
+          <h3 id="quiz-word" lang="es" tabindex="-1"></h3>
+          <div id="quiz-answers" role="group" aria-labelledby="quiz-word"></div>
+        </div>
+        <p id="quiz-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <button id="quiz-next" class="quiz-action" hidden>Next question</button>
+        <button id="quiz-restart" class="quiz-action" hidden>Start a new quiz</button>
+      </section>
       <footer>Made for comfortable, focused practice.</footer>
     </main>
   </div>
-  <script src="app.js"></script>
+  <script src="app.js?v=1.2.0"></script>
 </body>
 </html>
