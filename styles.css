@@ -93,3 +93,5 @@ main.quiz-view{max-width:1500px;padding:16px clamp(16px,3vw,48px);min-height:100
 
 /* Place reading size beside the version, wrapping only when space is tight. */
 .version-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;margin-bottom:24px}.version-row .version{margin:0}.version-row .size-control{display:flex;flex-direction:row;align-items:center;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:auto}.version-row .size-control label{white-space:nowrap}
+
+.version-row #audio-score{margin:0;font-size:1rem;font-weight:700;line-height:1.4;flex:1 1 260px}

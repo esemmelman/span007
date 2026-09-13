@@ -161,11 +161,12 @@ function showLesson(lesson) {
     if (active) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
+  document.getElementById('audio-score').hidden = lesson !== 'audio';
   document.querySelector('.controls').hidden = lesson !== 'definitions';
   document.querySelector('.translation-control').hidden = lesson !== 'definitions';
   document.querySelector('main > header').hidden = isQuiz;
   document.getElementById('main-content').classList.toggle('quiz-view', isQuiz);
-  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: '2. Quiz', rules: 'The Rules', conjugations: 'Conjugations', 'conjugation-quiz': '5. Quiz', audio: '6. audio' }[lesson]}`;
+  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: '2. Quiz', rules: 'The Rules', conjugations: 'Conjugations', 'conjugation-quiz': '5. Quiz', audio: '6. Audio' }[lesson]}`;
   if (isQuiz) {
     quizType = lesson;
     document.getElementById('quiz').setAttribute('aria-label', lesson === 'quiz' ? '2. Quiz: Definitions' : '5. Quiz: Conjugations');
