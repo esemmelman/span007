@@ -90,3 +90,6 @@ main.quiz-view{max-width:1500px;padding:16px clamp(16px,3vw,48px);min-height:100
 
 /* Keep playback quiet and stable; recording retains its red active state. */
 .audio-buttons .audio-play::after{content:"";display:inline-block;width:.35em;height:.35em;margin-left:.5em;border-radius:50%;background:currentColor;opacity:0;vertical-align:middle}.audio-buttons .audio-play[aria-pressed=true]{background:#2e6950;border-color:#2e6950}.audio-buttons .audio-play[aria-pressed=true]::after{opacity:.8}
+
+/* Place reading size beside the version, wrapping only when space is tight. */
+.version-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;margin-bottom:24px}.version-row .version{margin:0}.version-row .size-control{display:flex;flex-direction:row;align-items:center;flex-wrap:wrap;justify-content:flex-start;gap:10px;width:auto}.version-row .size-control label{white-space:nowrap}

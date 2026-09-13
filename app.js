@@ -161,7 +161,7 @@ function showLesson(lesson) {
     if (active) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
-  document.querySelector('.controls').hidden = isQuiz;
+  document.querySelector('.controls').hidden = lesson !== 'definitions';
   document.querySelector('.translation-control').hidden = lesson !== 'definitions';
   document.querySelector('main > header').hidden = isQuiz;
   document.getElementById('main-content').classList.toggle('quiz-view', isQuiz);
