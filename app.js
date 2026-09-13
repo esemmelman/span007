@@ -106,7 +106,7 @@ function showLesson(lesson) {
     else link.removeAttribute('aria-current');
   }
   document.querySelector('.controls').hidden = lesson === 'quiz';
-  document.querySelector('.version').hidden = lesson === 'quiz';
+  document.querySelector('main > header').hidden = lesson === 'quiz';
   document.title = `Spanish Practice · ${lesson === 'quiz' ? 'Quiz' : 'Definitions'}`;
   if (lesson === 'quiz') startQuiz();
   else document.getElementById('main-content').focus();
