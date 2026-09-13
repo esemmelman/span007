@@ -95,7 +95,10 @@ function showQuestion() {
       // Keep the selected answer focused and readable, but prevent repeat grading.
       for (const option of answers.children) {
         option.setAttribute('aria-disabled', 'true');
-        if (option.textContent === question.english) option.classList.add('correct');
+        if (option.textContent === question.english) {
+          option.classList.add('correct');
+          if (!correct) option.classList.add('pulse');
+        }
       }
       if (!correct) button.classList.add('incorrect');
       answerAnnouncement.textContent = `Answer: ${question.english}.`;
