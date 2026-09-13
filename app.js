@@ -61,7 +61,7 @@ function showQuestion() {
   document.getElementById('quiz-question').hidden = false;
   document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
   const question = questions[questionIndex];
-  quizWord.textContent = question.spanish;
+  quizWord.textContent = question.spanish.charAt(0).toLocaleUpperCase('es') + question.spanish.slice(1);
   const distractors = shuffled(vocabulary.filter(word => word.spanish !== question.spanish)).slice(0, 3);
   answers.replaceChildren();
   shuffled([question, ...distractors]).forEach(choice => {
@@ -106,6 +106,7 @@ function showLesson(lesson) {
     else link.removeAttribute('aria-current');
   }
   document.querySelector('.controls').hidden = lesson === 'quiz';
+  document.querySelector('.version').hidden = lesson === 'quiz';
   document.title = `Spanish Practice · ${lesson === 'quiz' ? 'Quiz' : 'Definitions'}`;
   if (lesson === 'quiz') startQuiz();
   else document.getElementById('main-content').focus();
@@ -127,3 +128,15 @@ next.addEventListener('click', () => {
 restart.addEventListener('click', startQuiz);
 document.getElementById('definitions-link').addEventListener('click', () => showLesson('definitions'));
 document.getElementById('quiz-link').addEventListener('click', () => showLesson('quiz'));
+
+// Measure sticky elements so enlarged text and mobile navigation do not overlap.
+if (typeof ResizeObserver !== 'undefined') {
+  const stickyObserver = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const property = entry.target.id === 'quiz-progress' ? '--quiz-progress-height' : '--sidebar-height';
+      document.documentElement.style.setProperty(property, `${entry.target.getBoundingClientRect().height}px`);
+    }
+  });
+  stickyObserver.observe(document.querySelector('.sidebar'));
+  stickyObserver.observe(document.getElementById('quiz-progress'));
+}
