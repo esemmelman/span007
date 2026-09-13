@@ -100,8 +100,10 @@ function showQuestion() {
         option.setAttribute('aria-disabled', String(correct || option.textContent !== question.english));
         if (option.textContent === question.english) {
           option.classList.add('correct');
+          if (!correct) option.classList.add('correction');
         }
       }
+      if (!correct) button.classList.add('incorrect');
       answerAnnouncement.textContent = `Answer: ${question.english}.${correct ? '' : ' Select this answer to continue.'}`;
       document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
       if (correct) advanceTimer = setTimeout(advanceQuestion, 2000);
