@@ -142,7 +142,8 @@ function showLesson(lesson) {
   document.getElementById('main-content').classList.toggle('quiz-view', lesson === 'quiz');
   document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: 'Quiz', rules: 'The Rules', conjugations: 'Conjugations' }[lesson]}`;
   if (lesson === 'quiz') startQuiz();
-  else if (['rules', 'conjugations'].includes(lesson)) document.getElementById(`${lesson}-title`).focus();
+  else if (lesson === 'rules') document.getElementById('rules-title').focus();
+  else if (lesson === 'conjugations') document.getElementById('conjugations').focus();
   else document.getElementById('main-content').focus();
 }
 

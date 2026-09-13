@@ -19,8 +19,6 @@ const conjugationPeople = [
   { spanish: 'Usted', pronoun: 'se', form: 2, english: 'You', self: 'yourself', poss: 'your' },
   { spanish: 'Nosotros', pronoun: 'nos', form: 3, english: 'We', self: 'ourselves', poss: 'our' },
   { spanish: 'Nosotras', pronoun: 'nos', form: 3, english: 'We', self: 'ourselves', poss: 'our' },
-  { spanish: 'Vosotros', pronoun: 'os', form: 4, english: 'You all', self: 'yourselves', poss: 'your' },
-  { spanish: 'Vosotras', pronoun: 'os', form: 4, english: 'You all', self: 'yourselves', poss: 'your' },
   { spanish: 'Ellos', pronoun: 'se', form: 5, english: 'They', self: 'themselves', poss: 'their' },
   { spanish: 'Ellas', pronoun: 'se', form: 5, english: 'They', self: 'themselves', poss: 'their' },
   { spanish: 'Ustedes', pronoun: 'se', form: 5, english: 'You all', self: 'yourselves', poss: 'your' },
