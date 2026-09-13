@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111c2c">
   <title>Spanish Practice · Definitions</title>
-  <link rel="stylesheet" href="styles.css?v=1.3.7">
+  <link rel="stylesheet" href="styles.css?v=1.4.0">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to lesson</a>
@@ -16,13 +16,14 @@
       <nav aria-label="Lessons">
         <button class="lesson active" id="definitions-link" aria-current="page" aria-controls="definitions">1. Definitions<span aria-hidden="true">↗</span></button>
         <button class="lesson" id="quiz-link" aria-controls="quiz">2. Quiz</button>
+        <button class="lesson" id="rules-link" aria-controls="rules" disabled aria-disabled="true" title="Get 100% on 2. Quiz to unlock this lesson.">3. The Rules</button>
       </nav>
       <p class="sidebar-note">Your pace.<br>Your way to learn.</p>
     </aside>
     <main id="main-content" tabindex="-1">
       <header>
         <h1>Reflexive verbs</h1>
-        <p class="version">Version 1.3.7</p>
+        <p class="version">Version 1.4.0</p>
       </header>
       <section class="controls" aria-label="Display settings">
         <div class="translation-control">
@@ -63,9 +64,88 @@
         <p id="quiz-answer-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
         <button id="quiz-restart" class="quiz-action" hidden>Start a new quiz</button>
       </section>
+      <section id="rules" aria-labelledby="rules-title" hidden>
+        <h2 id="rules-title" tabindex="-1">3. The Rules</h2>
+        <article class="rule">
+          <h3>1. Match the action to the person</h3>
+          <p>A reflexive verb often describes something a person does to themself.</p>
+          <p><span lang="es">Yo me lavo.</span> — I wash myself.</p>
+          <p>Compare: <span lang="es">Yo lavo el carro.</span> — I wash the car. The action is directed at the car, so no reflexive pronoun is needed.</p>
+          <p>Not every verb with <span lang="es">-se</span> translates as “myself” or “yourself.” Learn the whole meaning: <span lang="es">dormirse</span> means “to fall asleep.”</p>
+        </article>
+        <article class="rule">
+          <h3>2. Choose the reflexive pronoun</h3>
+          <p>The pronoun matches the subject: the person doing the action.</p>
+          <ul>
+            <li><span lang="es">Yo → me</span> (I → myself)</li>
+            <li><span lang="es">Tú → te</span> (you → yourself; informal)</li>
+            <li><span lang="es">Él / ella / usted → se</span> (he / she / formal you)</li>
+            <li><span lang="es">Nosotros / nosotras → nos</span> (we → ourselves)</li>
+            <li><span lang="es">Vosotros / vosotras → os</span> (informal plural you, mainly in Spain)</li>
+            <li><span lang="es">Ellos / ellas / ustedes → se</span> (they / plural you)</li>
+          </ul>
+        </article>
+        <article class="rule">
+          <h3>3. Remove -se, then conjugate</h3>
+          <p>Start with the infinitive: <span lang="es">levantarse</span>.</p>
+          <p>Remove <span lang="es">-se</span> to get <span lang="es">levantar</span>. Conjugate the verb for the subject and tense, then add the matching pronoun.</p>
+          <p><span lang="es">Yo + me + levanto = Yo me levanto.</span> — I get up.</p>
+          <p>You can omit the subject when it is clear: <span lang="es">Me levanto.</span> Keep the reflexive pronoun.</p>
+        </article>
+        <article class="rule">
+          <h3>4. Use the regular present-tense endings</h3>
+          <p>Remove <span lang="es">-ar</span>, <span lang="es">-er</span>, or <span lang="es">-ir</span> to find the stem. Add the ending for the subject.</p>
+          <p>In this order: <span lang="es">yo, tú, él/ella/usted, nosotros, vosotros, ellos/ellas/ustedes</span>.</p>
+          <ul>
+            <li><span lang="es">-ar: -o, -as, -a, -amos, -áis, -an</span></li>
+            <li><span lang="es">-er: -o, -es, -e, -emos, -éis, -en</span></li>
+            <li><span lang="es">-ir: -o, -es, -e, -imos, -ís, -en</span></li>
+          </ul>
+          <p>Example: <span lang="es">levantarse</span> in the present tense.</p>
+          <ul lang="es">
+            <li>Yo me levanto.</li><li>Tú te levantas.</li><li>Él / ella / usted se levanta.</li>
+            <li>Nosotros / nosotras nos levantamos.</li><li>Vosotros / vosotras os levantáis.</li><li>Ellos / ellas / ustedes se levantan.</li>
+          </ul>
+        </article>
+        <article class="rule">
+          <h3>5. Watch for stem changes</h3>
+          <p>Some verbs change a vowel in their stem. In the present tense, these examples change in all forms except <span lang="es">nosotros</span> and <span lang="es">vosotros</span>.</p>
+          <ul>
+            <li><span lang="es">Despertarse: e → ie. Me despierto.</span> — I wake up.</li>
+            <li><span lang="es">Acostarse: o → ue. Me acuesto.</span> — I go to bed.</li>
+            <li><span lang="es">Dormirse: o → ue. Me duermo.</span> — I fall asleep.</li>
+            <li><span lang="es">Vestirse: e → i. Me visto.</span> — I get dressed.</li>
+          </ul>
+          <p>Compare: <span lang="es">Nos despertamos. Nos acostamos. Nos dormimos. Nos vestimos.</span></p>
+        </article>
+        <article class="rule">
+          <h3>6. Put the pronoun in the right place</h3>
+          <p>Usually, put it before the conjugated verb.</p>
+          <p><span lang="es">Me ducho.</span> — I take a shower.</p>
+          <p>With a conjugated verb followed by an infinitive, put the pronoun before the conjugated verb or attach it to the infinitive.</p>
+          <p><span lang="es">Me voy a duchar. Voy a ducharme.</span> — Both mean “I am going to take a shower.”</p>
+          <p>With a progressive form, you also have two choices.</p>
+          <p><span lang="es">Me estoy duchando. Estoy duchándome.</span> — I am taking a shower. The attached pronoun can require a written accent.</p>
+        </article>
+        <article class="rule">
+          <h3>7. Negatives and commands</h3>
+          <p>For a negative statement, put <span lang="es">no</span> before the pronoun and verb.</p>
+          <p><span lang="es">No me levanto temprano.</span> — I do not get up early.</p>
+          <p>Attach the pronoun to an affirmative command. Put it before a negative command. Learn the command form too; it can differ from the present-tense form.</p>
+          <p><span lang="es">¡Levántate!</span> — Get up!</p>
+          <p><span lang="es">¡No te levantes!</span> — Do not get up!</p>
+        </article>
+        <article class="rule">
+          <h3>8. Body parts usually take el or la</h3>
+          <p>With reflexive actions, Spanish usually uses a definite article instead of “my” or “your” for body parts.</p>
+          <p><span lang="es">Me lavo las manos.</span> — I wash my hands.</p>
+          <p><span lang="es">Me cepillo los dientes.</span> — I brush my teeth.</p>
+          <p>The reflexive pronoun tells us whose hands or teeth are involved.</p>
+        </article>
+      </section>
       <footer>Made for comfortable, focused practice.</footer>
     </main>
   </div>
-  <script src="app.js?v=1.3.7"></script>
+  <script src="app.js?v=1.4.0"></script>
 </body>
 </html>
