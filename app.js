@@ -124,7 +124,9 @@ function showQuestion() {
     });
     answers.append(button);
   });
-  quizWord.focus();
+  // Start every question at the top, including after a long reference lesson.
+  quizWord.focus({ preventScroll: true });
+  window.scrollTo(0, 0);
 }
 
 function startQuiz() {
