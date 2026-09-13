@@ -146,14 +146,15 @@ function startQuiz() {
 }
 
 function showLesson(lesson) {
-  if (['rules', 'conjugations', 'conjugation-quiz'].includes(lesson) && !quizPassed) return;
+  if (['rules', 'conjugations', 'conjugation-quiz', 'audio'].includes(lesson) && !quizPassed) return;
   cancelAdvance();
+  stopAudioActivity();
   const isQuiz = lesson === 'quiz' || lesson === 'conjugation-quiz';
-  for (const name of ['definitions', 'quiz', 'rules', 'conjugations']) {
+  for (const name of ['definitions', 'quiz', 'rules', 'conjugations', 'audio']) {
     const active = name === 'quiz' ? isQuiz : name === lesson;
     document.getElementById(name).hidden = !active;
   }
-  for (const name of ['definitions', 'quiz', 'rules', 'conjugations', 'conjugation-quiz']) {
+  for (const name of ['definitions', 'quiz', 'rules', 'conjugations', 'conjugation-quiz', 'audio']) {
     const active = name === lesson;
     const link = document.getElementById(`${name}-link`);
     link.classList.toggle('active', active);
@@ -164,12 +165,13 @@ function showLesson(lesson) {
   document.querySelector('.translation-control').hidden = lesson !== 'definitions';
   document.querySelector('main > header').hidden = isQuiz;
   document.getElementById('main-content').classList.toggle('quiz-view', isQuiz);
-  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: '2. Quiz', rules: 'The Rules', conjugations: 'Conjugations', 'conjugation-quiz': '5. Quiz' }[lesson]}`;
+  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: '2. Quiz', rules: 'The Rules', conjugations: 'Conjugations', 'conjugation-quiz': '5. Quiz', audio: '6. audio' }[lesson]}`;
   if (isQuiz) {
     quizType = lesson;
     document.getElementById('quiz').setAttribute('aria-label', lesson === 'quiz' ? '2. Quiz: Definitions' : '5. Quiz: Conjugations');
     startQuiz();
   }
+  else if (lesson === 'audio') startAudioQuiz();
   else if (lesson === 'rules') document.getElementById('rules-title').focus();
   else if (lesson === 'conjugations') document.getElementById('conjugations').focus();
   else document.getElementById('main-content').focus();
@@ -219,3 +221,5 @@ if (typeof ResizeObserver !== 'undefined') {
   stickyObserver.observe(document.querySelector('.sidebar'));
   stickyObserver.observe(document.getElementById('quiz-progress'));
 }
+
+document.getElementById('audio-link').addEventListener('click', () => showLesson('audio'));

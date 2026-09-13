@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111c2c">
   <title>Spanish Practice · Definitions</title>
-  <link rel="stylesheet" href="styles.css?v=1.6.6">
+  <link rel="stylesheet" href="styles.css?v=1.7.0">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to lesson</a>
@@ -19,13 +19,14 @@
         <button class="lesson" id="rules-link" aria-controls="rules" disabled aria-disabled="true" title="Get 100% on 2. Quiz to unlock this lesson.">3. The Rules</button>
         <button class="lesson" id="conjugations-link" aria-controls="conjugations" disabled aria-disabled="true" title="Get 100% on 2. Quiz to unlock this lesson.">4. Conjugations</button>
         <button class="lesson" id="conjugation-quiz-link" aria-controls="quiz" disabled aria-disabled="true" title="Get 100% on 2. Quiz to unlock this lesson.">5. Quiz</button>
+        <button class="lesson" id="audio-link" aria-controls="audio" disabled aria-disabled="true" title="Get 100% on 2. Quiz to unlock this lesson.">6. audio</button>
       </nav>
       <p class="sidebar-note">Your pace.<br>Your way to learn.</p>
     </aside>
     <main id="main-content" tabindex="-1">
       <header>
         <h1>Reflexive verbs</h1>
-        <p class="version">Version 1.6.6</p>
+        <p class="version">Version 1.7.0</p>
       </header>
       <section class="controls" aria-label="Display settings">
         <div class="translation-control">
@@ -148,10 +149,20 @@
       <section id="conjugations" aria-label="Conjugations" tabindex="-1" hidden>
         <div id="conjugation-examples"></div>
       </section>
+      <section id="audio" aria-labelledby="audio-title" hidden>
+        <h2 id="audio-title" tabindex="-1">6. audio</h2>
+        <p>Play each English sentence. Press Record and say only the Spanish conjugated verb (with or without its reflexive pronoun). Press Stop recording to check your answer.</p>
+        <p class="audio-note">Allow microphone access when asked. Speech recognition may use your browser’s online service. Scores check the recognized words, not pronunciation quality.</p>
+        <p id="audio-support" role="status"></p>
+        <p id="audio-score" role="status" aria-live="polite"></p>
+        <div id="audio-questions"></div>
+        <button id="audio-restart" class="quiz-action">Start a new audio quiz</button>
+      </section>
       <footer>Made for comfortable, focused practice.</footer>
     </main>
   </div>
-  <script src="conjugations.js?v=1.6.6"></script>
-  <script src="app.js?v=1.6.6"></script>
+  <script src="conjugations.js?v=1.7.0"></script>
+  <script src="audio.js?v=1.7.0"></script>
+  <script src="app.js?v=1.7.0"></script>
 </body>
 </html>

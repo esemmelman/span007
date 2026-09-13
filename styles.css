@@ -82,3 +82,6 @@ main.quiz-view{max-width:1500px;padding:16px clamp(16px,3vw,48px);min-height:100
   .quiz-answer{padding:8px 12px;min-height:48px}
   #rules-title,#conjugations,#conjugations-title{scroll-margin-top:16px}
 }
+
+/* Audio practice: two large controls beside each question number. */
+#audio{font-size:clamp(1.1rem,2vw,1.5rem);line-height:1.5}#audio h2{font-size:var(--verb-size)}.audio-note{color:var(--muted);font-size:1rem}#audio-score{font-weight:700}.audio-question{margin:20px 0;padding:20px;background:white;border:2px solid #b6c4b8;border-radius:12px}.audio-buttons{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.audio-buttons button{min-height:54px;padding:12px 20px;background:#245a43;color:white;border:2px solid #245a43;border-radius:10px;font-weight:700}.audio-buttons button[aria-pressed=true]{background:#9b2929;border-color:#9b2929}.audio-buttons button:disabled{opacity:.6;cursor:not-allowed}.audio-feedback{overflow-wrap:anywhere}.audio-feedback:empty{display:none}.audio-question[data-result=correct]{border-color:#245a43;background:#e5f2e5}.audio-question[data-result=incorrect]{border-color:#9b2929;background:#fff0ed}#audio-title:focus-visible{outline:4px solid #ac4a00;outline-offset:5px}@media(max-width:620px){.audio-question{padding:14px}.audio-buttons{gap:8px}.audio-buttons button{padding:10px 12px}}
