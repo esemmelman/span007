@@ -37,12 +37,18 @@ const vocabulary = Array.from(document.querySelectorAll('tbody tr'), row => ({
 const quizWord = document.getElementById('quiz-word');
 const answers = document.getElementById('quiz-answers');
 const feedback = document.getElementById('quiz-feedback');
-const next = document.getElementById('quiz-next');
+const answerAnnouncement = document.getElementById('quiz-answer-announcement');
 const restart = document.getElementById('quiz-restart');
 let questions = [];
 let questionIndex = 0;
 let score = 0;
 let answered = false;
+let advanceTimer = null;
+
+function cancelAdvance() {
+  clearTimeout(advanceTimer);
+  advanceTimer = null;
+}
 let quizPassed = false;
 try { quizPassed = localStorage.getItem('spanish-quiz-passed') === 'true'; } catch (_) { /* Use session progress. */ }
 
@@ -66,9 +72,10 @@ function shuffled(items) {
 }
 
 function showQuestion() {
+  cancelAdvance();
   answered = false;
   feedback.textContent = '';
-  next.hidden = true;
+  answerAnnouncement.textContent = '';
   restart.hidden = true;
   document.getElementById('quiz-question').hidden = false;
   document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
@@ -91,10 +98,9 @@ function showQuestion() {
         if (option.textContent === question.english) option.classList.add('correct');
       }
       if (!correct) button.classList.add('incorrect');
-      feedback.textContent = correct ? 'Correct!' : `Incorrect. The correct answer is: ${question.english}.`;
+      answerAnnouncement.textContent = `Answer: ${question.english}.`;
       document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
-      next.textContent = questionIndex === questions.length - 1 ? 'See final grade' : 'Next question';
-      next.hidden = false;
+      advanceTimer = setTimeout(advanceQuestion, 4000);
     });
     answers.append(button);
   });
@@ -102,6 +108,7 @@ function showQuestion() {
 }
 
 function startQuiz() {
+  cancelAdvance();
   const previousOrder = questions.map(word => word.spanish).join(',');
   questions = shuffled(vocabulary);
   if (questions.length > 1 && questions.map(word => word.spanish).join(',') === previousOrder) {
@@ -113,6 +120,7 @@ function startQuiz() {
 }
 
 function showLesson(lesson) {
+  cancelAdvance();
   for (const name of ['definitions', 'quiz']) {
     const active = name === lesson;
     document.getElementById(name).hidden = !active;
@@ -129,7 +137,8 @@ function showLesson(lesson) {
   else document.getElementById('main-content').focus();
 }
 
-next.addEventListener('click', () => {
+function advanceQuestion() {
+  advanceTimer = null;
   if (!answered) return;
   questionIndex++;
   if (questionIndex < questions.length) showQuestion();
@@ -147,11 +156,11 @@ next.addEventListener('click', () => {
       feedback.textContent += ' Get 100% to complete this quiz. Try again with a reshuffled quiz.';
       restart.textContent = 'Try again';
     }
-    next.hidden = true;
+    answerAnnouncement.textContent = '';
     restart.hidden = false;
     restart.focus();
   }
-});
+}
 restart.addEventListener('click', startQuiz);
 document.getElementById('definitions-link').addEventListener('click', () => showLesson('definitions'));
 document.getElementById('quiz-link').addEventListener('click', () => showLesson('quiz'));
