@@ -88,21 +88,23 @@ function showQuestion() {
     button.className = 'quiz-answer';
     button.textContent = choice.english;
     button.addEventListener('click', () => {
-      if (answered) return;
+      if (answered) {
+        if (advanceTimer === null && choice.spanish === question.spanish) advanceQuestion();
+        return;
+      }
       answered = true;
       const correct = choice.spanish === question.spanish;
       if (correct) score++;
       // Keep the selected answer focused and readable, but prevent repeat grading.
       for (const option of answers.children) {
-        option.setAttribute('aria-disabled', 'true');
+        option.setAttribute('aria-disabled', String(correct || option.textContent !== question.english));
         if (option.textContent === question.english) {
           option.classList.add('correct');
-          if (!correct) option.classList.add('pulse');
         }
       }
-      answerAnnouncement.textContent = `Answer: ${question.english}.`;
+      answerAnnouncement.textContent = `Answer: ${question.english}.${correct ? '' : ' Select this answer to continue.'}`;
       document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
-      advanceTimer = setTimeout(advanceQuestion, correct ? 2000 : 4000);
+      if (correct) advanceTimer = setTimeout(advanceQuestion, 2000);
     });
     answers.append(button);
   });
