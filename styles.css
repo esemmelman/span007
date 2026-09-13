@@ -23,6 +23,6 @@ main{width:100%;max-width:1150px;margin:0 auto;padding:58px clamp(24px,5vw,80px)
 
 main.quiz-view{padding-top:20px}.quiz-view #quiz{margin-top:0}.lesson:disabled,.lesson[aria-disabled=true]{color:#bfccd9;border-color:#74828e;background:#26313f;cursor:not-allowed}.lesson:disabled:hover{filter:none}
 
-.quiz-answer.correct{background:#245a43;color:#fff;border-color:#173b2c}.quiz-answer.incorrect{background:#f6caca;color:#601d1d;border-color:#a64444}.quiz-answer[aria-disabled=true]:hover{filter:none}.quiz-answer.pulse{animation:answer-pulse 1.2s step-end infinite}
-@keyframes answer-pulse{0%,100%{background-color:#245a43;color:#fff;box-shadow:0 0 0 0 rgba(36,90,67,0)}50%{background-color:#d4f0ce;color:#173b2c;box-shadow:0 0 0 5px #245a43}}
+.quiz-answer.correct{background:#d4f0ce;color:#173b2c;border-color:#245a43}.quiz-answer.incorrect{background:#f6caca;color:#601d1d;border-color:#a64444}.quiz-answer[aria-disabled=true]:hover{filter:none}.quiz-answer.pulse{animation:answer-pulse 2s step-end infinite}
+@keyframes answer-pulse{0%,100%{background-color:#d4f0ce;color:#173b2c;box-shadow:0 0 0 0 rgba(36,90,67,0)}75%{background-color:#245a43;color:#fff;box-shadow:0 0 0 5px #245a43}}
 @media(prefers-reduced-motion:reduce){.quiz-answer.pulse{animation-duration:2s;outline:4px solid #245a43;outline-offset:4px}}
