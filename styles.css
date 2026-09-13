@@ -20,3 +20,5 @@ main{width:100%;max-width:1150px;margin:0 auto;padding:58px clamp(24px,5vw,80px)
 
 #quiz{--quiz-sticky-top:0px}#quiz-progress{position:sticky;top:var(--quiz-sticky-top);z-index:1;background:var(--paper);padding:16px 0;margin:0;border-bottom:2px solid #b6c4b8}#quiz-word,#quiz .quiz-answer,#quiz .quiz-action{scroll-margin-top:calc(var(--quiz-sticky-top) + var(--quiz-progress-height, 180px) + 20px)}
 @media(max-width:620px){#quiz{--quiz-sticky-top:var(--sidebar-height, 40dvh)}}
+
+main.quiz-view{padding-top:20px}.quiz-view #quiz{margin-top:0}.lesson:disabled,.lesson[aria-disabled=true]{color:#bfccd9;border-color:#74828e;background:#26313f;cursor:not-allowed}.lesson:disabled:hover{filter:none}

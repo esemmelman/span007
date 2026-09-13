@@ -43,6 +43,18 @@ let questions = [];
 let questionIndex = 0;
 let score = 0;
 let answered = false;
+let quizPassed = false;
+try { quizPassed = localStorage.getItem('spanish-quiz-passed') === 'true'; } catch (_) { /* Use session progress. */ }
+
+function updateLessonLocks() {
+  document.querySelectorAll('#quiz-link ~ .lesson').forEach(link => {
+    link.disabled = !quizPassed;
+    link.setAttribute('aria-disabled', String(!quizPassed));
+    if (!quizPassed) link.setAttribute('title', 'Get 100% on 2. Quiz to unlock this lesson.');
+    else link.removeAttribute('title');
+  });
+}
+updateLessonLocks();
 
 function shuffled(items) {
   const result = [...items];
@@ -90,7 +102,11 @@ function showQuestion() {
 }
 
 function startQuiz() {
+  const previousOrder = questions.map(word => word.spanish).join(',');
   questions = shuffled(vocabulary);
+  if (questions.length > 1 && questions.map(word => word.spanish).join(',') === previousOrder) {
+    questions.push(questions.shift());
+  }
   questionIndex = 0;
   score = 0;
   showQuestion();
@@ -107,6 +123,7 @@ function showLesson(lesson) {
   }
   document.querySelector('.controls').hidden = lesson === 'quiz';
   document.querySelector('main > header').hidden = lesson === 'quiz';
+  document.getElementById('main-content').classList.toggle('quiz-view', lesson === 'quiz');
   document.title = `Spanish Practice · ${lesson === 'quiz' ? 'Quiz' : 'Definitions'}`;
   if (lesson === 'quiz') startQuiz();
   else document.getElementById('main-content').focus();
@@ -120,6 +137,16 @@ next.addEventListener('click', () => {
     document.getElementById('quiz-question').hidden = true;
     document.getElementById('quiz-progress').textContent = 'Quiz complete';
     feedback.textContent = `Final grade: ${score} out of ${questions.length} (${Math.round(score / questions.length * 100)}%).`;
+    if (score === questions.length) {
+      quizPassed = true;
+      savePreference('spanish-quiz-passed', 'true');
+      updateLessonLocks();
+      feedback.textContent += ' Perfect score! You can continue to the next lessons.';
+      restart.textContent = 'Practice again';
+    } else {
+      feedback.textContent += ' Get 100% to complete this quiz. Try again with a reshuffled quiz.';
+      restart.textContent = 'Try again';
+    }
     next.hidden = true;
     restart.hidden = false;
     restart.focus();
