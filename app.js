@@ -31,9 +31,15 @@ textSize.addEventListener('change', () => {
   savePreference('spanish-text-size', textSize.value);
 });
 const vocabulary = Array.from(document.querySelectorAll('tbody tr'), row => ({
-  spanish: row.querySelector('th').textContent,
-  english: row.querySelector('td').textContent,
+  prompt: row.querySelector('th').textContent,
+  answer: row.querySelector('td').textContent,
 }));
+const conjugationQuestions = conjugationVerbs.flatMap(verb => conjugationPeople.map(person => {
+  const sentence = conjugationSentence(verb, person);
+  return { prompt: sentence.english, answer: sentence.spanish };
+}));
+let quizType = 'quiz';
+let questionBank = vocabulary;
 const quizWord = document.getElementById('quiz-word');
 const answers = document.getElementById('quiz-answers');
 const feedback = document.getElementById('quiz-feedback');
@@ -80,31 +86,34 @@ function showQuestion() {
   document.getElementById('quiz-question').hidden = false;
   document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
   const question = questions[questionIndex];
-  quizWord.textContent = question.spanish.charAt(0).toLocaleUpperCase('es') + question.spanish.slice(1);
-  const distractors = shuffled(vocabulary.filter(word => word.spanish !== question.spanish)).slice(0, 3);
+  quizWord.lang = quizType === 'quiz' ? 'es' : 'en';
+  quizWord.textContent = question.prompt.charAt(0).toLocaleUpperCase(quizWord.lang) + question.prompt.slice(1);
+  // Exclude alternate valid translations of the same English sentence.
+  const distractors = shuffled(questionBank.filter(word => word.prompt !== question.prompt)).slice(0, 3);
   answers.replaceChildren();
   shuffled([question, ...distractors]).forEach(choice => {
     const button = document.createElement('button');
     button.className = 'quiz-answer';
-    button.textContent = choice.english;
+    button.textContent = choice.answer;
+    button.lang = quizType === 'quiz' ? 'en' : 'es';
     button.addEventListener('click', () => {
       if (answered) {
-        if (advanceTimer === null && choice.spanish === question.spanish) advanceQuestion();
+        if (advanceTimer === null && choice.answer === question.answer) advanceQuestion();
         return;
       }
       answered = true;
-      const correct = choice.spanish === question.spanish;
+      const correct = choice.answer === question.answer;
       if (correct) score++;
       // Keep the selected answer focused and readable, but prevent repeat grading.
       for (const option of answers.children) {
-        option.setAttribute('aria-disabled', String(correct || option.textContent !== question.english));
-        if (option.textContent === question.english) {
+        option.setAttribute('aria-disabled', String(correct || option.textContent !== question.answer));
+        if (option.textContent === question.answer) {
           option.classList.add('correct');
           if (!correct) option.classList.add('correction');
         }
       }
       if (!correct) button.classList.add('incorrect');
-      answerAnnouncement.textContent = `Answer: ${question.english}.${correct ? '' : ' Select this answer to continue.'}`;
+      answerAnnouncement.textContent = `Answer: ${question.answer}${question.answer.endsWith('.') ? '' : '.'}${correct ? '' : ' Select this answer to continue.'}`;
       document.getElementById('quiz-progress').textContent = `Question ${questionIndex + 1} of ${questions.length} · Score: ${score}`;
       if (correct) advanceTimer = setTimeout(advanceQuestion, 2000);
     });
@@ -115,9 +124,13 @@ function showQuestion() {
 
 function startQuiz() {
   cancelAdvance();
-  const previousOrder = questions.map(word => word.spanish).join(',');
-  questions = shuffled(vocabulary);
-  if (questions.length > 1 && questions.map(word => word.spanish).join(',') === previousOrder) {
+  const previousOrder = questions.map(word => word.prompt).join(',');
+  // Choose one Spanish variant per English prompt to avoid repeated questions.
+  questionBank = quizType === 'quiz' ? vocabulary : Array.from(
+    new Map(shuffled(conjugationQuestions).map(question => [question.prompt, question])).values()
+  );
+  questions = shuffled(questionBank).slice(0, quizType === 'quiz' ? 10 : 20);
+  if (questions.length > 1 && questions.map(word => word.prompt).join(',') === previousOrder) {
     questions.push(questions.shift());
   }
   questionIndex = 0;
@@ -126,22 +139,30 @@ function startQuiz() {
 }
 
 function showLesson(lesson) {
-  if (['rules', 'conjugations'].includes(lesson) && !quizPassed) return;
+  if (['rules', 'conjugations', 'conjugation-quiz'].includes(lesson) && !quizPassed) return;
   cancelAdvance();
+  const isQuiz = lesson === 'quiz' || lesson === 'conjugation-quiz';
   for (const name of ['definitions', 'quiz', 'rules', 'conjugations']) {
-    const active = name === lesson;
+    const active = name === 'quiz' ? isQuiz : name === lesson;
     document.getElementById(name).hidden = !active;
+  }
+  for (const name of ['definitions', 'quiz', 'rules', 'conjugations', 'conjugation-quiz']) {
+    const active = name === lesson;
     const link = document.getElementById(`${name}-link`);
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
-  document.querySelector('.controls').hidden = lesson === 'quiz';
+  document.querySelector('.controls').hidden = isQuiz;
   document.querySelector('.translation-control').hidden = lesson !== 'definitions';
-  document.querySelector('main > header').hidden = lesson === 'quiz';
-  document.getElementById('main-content').classList.toggle('quiz-view', lesson === 'quiz');
-  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: 'Quiz', rules: 'The Rules', conjugations: 'Conjugations' }[lesson]}`;
-  if (lesson === 'quiz') startQuiz();
+  document.querySelector('main > header').hidden = isQuiz;
+  document.getElementById('main-content').classList.toggle('quiz-view', isQuiz);
+  document.title = `Spanish Practice · ${{ definitions: 'Definitions', quiz: '2. Quiz', rules: 'The Rules', conjugations: 'Conjugations', 'conjugation-quiz': '5. Quiz' }[lesson]}`;
+  if (isQuiz) {
+    quizType = lesson;
+    document.getElementById('quiz').setAttribute('aria-label', lesson === 'quiz' ? '2. Quiz: Definitions' : '5. Quiz: Conjugations');
+    startQuiz();
+  }
   else if (lesson === 'rules') document.getElementById('rules-title').focus();
   else if (lesson === 'conjugations') document.getElementById('conjugations').focus();
   else document.getElementById('main-content').focus();
@@ -157,10 +178,12 @@ function advanceQuestion() {
     document.getElementById('quiz-progress').textContent = 'Quiz complete';
     feedback.textContent = `Final grade: ${score} out of ${questions.length} (${Math.round(score / questions.length * 100)}%).`;
     if (score === questions.length) {
-      quizPassed = true;
-      savePreference('spanish-quiz-passed', 'true');
-      updateLessonLocks();
-      feedback.textContent += ' Perfect score! You can continue to the next lessons.';
+      if (quizType === 'quiz') {
+        quizPassed = true;
+        savePreference('spanish-quiz-passed', 'true');
+        updateLessonLocks();
+      }
+      feedback.textContent += ' Perfect score!';
       restart.textContent = 'Practice again';
     } else {
       feedback.textContent += ' Get 100% to complete this quiz. Try again with a reshuffled quiz.';
@@ -176,6 +199,7 @@ document.getElementById('definitions-link').addEventListener('click', () => show
 document.getElementById('quiz-link').addEventListener('click', () => showLesson('quiz'));
 document.getElementById('rules-link').addEventListener('click', () => showLesson('rules'));
 document.getElementById('conjugations-link').addEventListener('click', () => showLesson('conjugations'));
+document.getElementById('conjugation-quiz-link').addEventListener('click', () => showLesson('conjugation-quiz'));
 
 // Measure sticky elements so enlarged text and mobile navigation do not overlap.
 if (typeof ResizeObserver !== 'undefined') {
