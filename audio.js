@@ -38,7 +38,7 @@ function updateAudioControls() {
     const active = audioSession?.row === row;
     row.play.disabled = !window.speechSynthesis || !!audioSession;
     const playing = audioPlayback?.row === row;
-    row.play.textContent = playing ? 'Stop audio' : 'Play';
+    row.play.textContent = 'Play';
     row.play.setAttribute('aria-pressed', String(playing));
     row.play.setAttribute('aria-label', `${playing ? 'Stop audio for' : 'Play'} sentence ${row.number}`);
     row.record.disabled = row.correct === true || !SpeechRecognitionAPI || (!!audioSession && (!active || audioSession.stopping));
@@ -190,6 +190,7 @@ function startAudioQuiz() {
     number.textContent = `${index + 1}.`;
     const play = document.createElement('button');
     play.textContent = 'Play';
+    play.className = 'audio-play';
     play.setAttribute('aria-label', `Play sentence ${index + 1}`);
     const record = document.createElement('button');
     record.setAttribute('aria-label', `Record or stop answer ${index + 1}`);
