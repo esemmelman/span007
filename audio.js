@@ -3,6 +3,22 @@ let audioRows = [];
 let audioSession = null;
 let audioPlayback = null;
 
+// Voice metadata has no gender field; prefer familiar female English voice names.
+let playbackVoices = [];
+function refreshPlaybackVoices() {
+  playbackVoices = window.speechSynthesis?.getVoices?.() || [];
+}
+refreshPlaybackVoices();
+window.speechSynthesis?.addEventListener?.('voiceschanged', refreshPlaybackVoices);
+
+function preferredEnglishVoice() {
+  refreshPlaybackVoices();
+  const english = playbackVoices.filter(voice => /^en(?:[-_]|$)/i.test(voice.lang));
+  const female = english.filter(voice => /\b(female|zira|aria|jenny|samantha|susan|victoria|karen|moira|tessa|serena|sonia|hazel)\b/i.test(voice.name));
+  return female.find(voice => /^en[-_]US$/i.test(voice.lang)) || female[0]
+    || english.find(voice => voice.default) || english[0] || null;
+}
+
 function normalizeSpokenAnswer(text) {
   return text.toLocaleLowerCase('es').normalize('NFC')
     .replace(/[áéíóúü]/g, letter => ({ á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u', ü: 'u' }[letter]))
@@ -44,7 +60,14 @@ function playAudio(row, text, lang) {
   const playback = { row, utterance };
   audioPlayback = playback;
   utterance.lang = lang;
-  utterance.rate = 0.85;
+  utterance.rate = lang.startsWith('en') ? 0.65 : 0.85;
+  if (lang.startsWith('en')) {
+    const voice = preferredEnglishVoice();
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    }
+  }
   const finish = () => {
     if (audioPlayback !== playback) return;
     audioPlayback = null;
