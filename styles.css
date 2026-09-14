@@ -101,6 +101,11 @@ body.audio-mode{background:#000}
 body.audio-mode main{max-width:none;padding:0;background:#000;color:#fff}
 body.audio-mode main > header,body.audio-mode main > footer{display:none}
 body.audio-mode #audio{min-height:100dvh;display:grid;place-items:center;margin:0;padding:32px;outline:none}
-body.audio-mode #audio > :not(#audio-sentence){position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
-body.audio-mode #audio-sentence{margin:0;color:#fff;font-size:var(--verb-size);font-weight:700;text-align:center;overflow-wrap:anywhere;max-width:100%}
+body.audio-mode #audio > :not(#audio-text){position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+body.audio-mode #audio-text{width:100%;max-width:100%;font-size:var(--verb-size);font-weight:700;text-align:center;overflow-wrap:anywhere}
+body.audio-mode #audio-text p{margin:0;min-height:1.5em}
+body.audio-mode #audio-text p + p{margin-top:24px}
+body.audio-mode #audio-sentence{color:#ff6262}
+body.audio-mode #audio-transcript{color:#669fff}
+body.audio-mode #audio-answer{color:#58d780}
 @media(max-width:620px){body.audio-mode #audio{min-height:calc(100dvh - var(--sidebar-height,180px));padding:24px}}

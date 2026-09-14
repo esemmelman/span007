@@ -24,6 +24,12 @@ function announceAudioStatus(message) {
   document.getElementById('audio-support').textContent = message;
 }
 
+function clearAudioText() {
+  for (const id of ['audio-sentence', 'audio-transcript', 'audio-answer']) {
+    document.getElementById(id).textContent = '';
+  }
+}
+
 function recordAudioAnswer(row, run, next) {
   if (run !== audioRun) return;
   const recognition = new SpeechRecognitionAPI();
@@ -61,8 +67,7 @@ function recordAudioAnswer(row, run, next) {
   recognition.onresult = event => {
     if (audioSession !== session) return;
     session.transcript = Array.from(event.results).map(result => result[0].transcript).join(' ');
-    document.getElementById('audio-sentence').lang = 'en';
-    document.getElementById('audio-sentence').textContent = session.transcript;
+    document.getElementById('audio-transcript').textContent = session.transcript;
     session.startedSpeaking = true;
     // Interim results keep the silence deadline moving while the user speaks.
     silence();
@@ -80,13 +85,12 @@ function recordAudioAnswer(row, run, next) {
     clearTimeout(session.silenceTimer);
     audioSession = null;
     row.transcript = session.transcript;
-    document.getElementById('audio-sentence').lang = 'en';
-    document.getElementById('audio-sentence').textContent = `Correct answer: ${row.prompt}`;
+    document.getElementById('audio-answer').textContent = row.prompt;
     if (!session.failed && run === audioRun) {
       // Leave time to read the answer before the black pause.
       audioDelay = setTimeout(() => {
         if (run !== audioRun) return;
-        document.getElementById('audio-sentence').textContent = '';
+        clearAudioText();
         next(1500);
       }, 3000);
     }
@@ -103,7 +107,7 @@ function startAudioQuiz() {
   stopAudioActivity();
   const run = audioRun;
   document.getElementById('audio-questions').replaceChildren();
-  document.getElementById('audio-sentence').textContent = '';
+  clearAudioText();
   announceAudioStatus('Audio practice. Press Escape to return to lessons.');
   document.getElementById('audio').focus();
   if (!window.speechSynthesis || !SpeechRecognitionAPI) {
@@ -122,7 +126,7 @@ function startAudioQuiz() {
     const row = audioRows[index++];
     audioDelay = setTimeout(() => {
       if (run !== audioRun) return;
-      document.getElementById('audio-sentence').textContent = '';
+      clearAudioText();
       const utterance = new SpeechSynthesisUtterance(row.answer);
       utterance.lang = 'es-ES';
       utterance.rate = 0.85;
