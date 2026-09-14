@@ -43,7 +43,7 @@ function recordAudioAnswer(row, run, next) {
   const silence = () => {
     clearTimeout(session.silenceTimer);
     if (session.startedSpeaking && !session.stopping) {
-      session.silenceTimer = setTimeout(stop, 3000);
+      session.silenceTimer = setTimeout(stop, 2000);
     }
   };
   recognition.onstart = () => {
@@ -61,6 +61,7 @@ function recordAudioAnswer(row, run, next) {
   recognition.onresult = event => {
     if (audioSession !== session) return;
     session.transcript = Array.from(event.results).map(result => result[0].transcript).join(' ');
+    document.getElementById('audio-sentence').textContent = session.transcript;
     session.startedSpeaking = true;
     // Interim results keep the silence deadline moving while the user speaks.
     silence();
@@ -78,6 +79,7 @@ function recordAudioAnswer(row, run, next) {
     clearTimeout(session.silenceTimer);
     audioSession = null;
     row.transcript = session.transcript;
+    document.getElementById('audio-sentence').textContent = `Correct answer: ${row.answer}`;
     if (!session.failed && run === audioRun) next();
   };
   try {
@@ -109,9 +111,9 @@ function startAudioQuiz() {
       return;
     }
     const row = audioRows[index++];
-    document.getElementById('audio-sentence').textContent = '';
     audioDelay = setTimeout(() => {
       if (run !== audioRun) return;
+      document.getElementById('audio-sentence').textContent = '';
       const utterance = new SpeechSynthesisUtterance(row.answer);
       utterance.lang = 'es-ES';
       utterance.rate = 0.85;
@@ -119,7 +121,6 @@ function startAudioQuiz() {
       utterance.onend = () => {
         if (run !== audioRun || audioPlayback !== utterance) return;
         audioPlayback = null;
-        document.getElementById('audio-sentence').textContent = row.answer;
         recordAudioAnswer(row, run, next);
       };
       utterance.onerror = () => {
