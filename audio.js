@@ -4,6 +4,17 @@ let audioPlayback = null;
 let audioDelay = null;
 let audioRun = 0;
 let audioRows = [];
+const usedAudioSentences = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem('spanish-audio-used') || '[]');
+  if (Array.isArray(saved)) saved.filter(value => typeof value === 'string').forEach(value => usedAudioSentences.add(value));
+} catch (_) { /* Keep sentence history for this visit when storage is unavailable. */ }
+
+function availableAudioQuestions() {
+  return Array.from(new Map(shuffled(conjugationQuestions)
+    .filter(question => !usedAudioSentences.has(question.answer))
+    .map(question => [question.answer, question])).values());
+}
 
 function stopAudioActivity() {
   audioRun++;
@@ -92,7 +103,7 @@ function recordAudioAnswer(row, run, next) {
         if (run !== audioRun) return;
         clearAudioText();
         next(1500);
-      }, 3000);
+      }, 1500);
     }
   };
   try {
@@ -108,19 +119,28 @@ function startAudioQuiz() {
   const run = audioRun;
   document.getElementById('audio-questions').replaceChildren();
   clearAudioText();
+  document.getElementById('audio-restart').hidden = true;
+  document.getElementById('audio-complete').hidden = true;
   announceAudioStatus('Audio practice. Press Escape to return to lessons.');
   document.getElementById('audio').focus();
   if (!window.speechSynthesis || !SpeechRecognitionAPI) {
     announceAudioStatus('Audio practice requires speech playback and speech recognition support. Press Escape to return to lessons.');
     return;
   }
-  const bank = Array.from(new Map(shuffled(conjugationQuestions).map(question => [question.prompt, question])).values());
+  const bank = availableAudioQuestions();
   audioRows = shuffled(bank).slice(0, 10);
   let index = 0;
   const next = (delay = 3000) => {
     if (run !== audioRun) return;
     if (index === audioRows.length) {
       announceAudioStatus('Audio practice complete. Press Escape to return to lessons.');
+      const restart = document.getElementById('audio-restart');
+      if (availableAudioQuestions().length) {
+        restart.hidden = false;
+        restart.focus();
+      } else {
+        document.getElementById('audio-complete').hidden = false;
+      }
       return;
     }
     const row = audioRows[index++];
@@ -133,6 +153,10 @@ function startAudioQuiz() {
       audioPlayback = utterance;
       utterance.onstart = () => {
         if (run !== audioRun || audioPlayback !== utterance) return;
+        usedAudioSentences.add(row.answer);
+        try {
+          localStorage.setItem('spanish-audio-used', JSON.stringify([...usedAudioSentences]));
+        } catch (_) { /* In-memory history still prevents repeats during this visit. */ }
         document.getElementById('audio-sentence').lang = 'es';
         document.getElementById('audio-sentence').textContent = row.answer;
       };
@@ -158,3 +182,4 @@ window.addEventListener('keydown', event => {
   }
 });
 window.addEventListener('pagehide', stopAudioActivity);
+document.getElementById('audio-restart').addEventListener('click', startAudioQuiz);
