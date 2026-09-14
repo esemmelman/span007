@@ -29,7 +29,7 @@ function recordAudioAnswer(row, run, next) {
   const recognition = new SpeechRecognitionAPI();
   const session = { recognition, transcript: '', stopping: false, startedSpeaking: false };
   audioSession = session;
-  recognition.lang = 'es-ES';
+  recognition.lang = 'en-US';
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
@@ -61,6 +61,7 @@ function recordAudioAnswer(row, run, next) {
   recognition.onresult = event => {
     if (audioSession !== session) return;
     session.transcript = Array.from(event.results).map(result => result[0].transcript).join(' ');
+    document.getElementById('audio-sentence').lang = 'en';
     document.getElementById('audio-sentence').textContent = session.transcript;
     session.startedSpeaking = true;
     // Interim results keep the silence deadline moving while the user speaks.
@@ -79,7 +80,8 @@ function recordAudioAnswer(row, run, next) {
     clearTimeout(session.silenceTimer);
     audioSession = null;
     row.transcript = session.transcript;
-    document.getElementById('audio-sentence').textContent = `Correct answer: ${row.answer}`;
+    document.getElementById('audio-sentence').lang = 'en';
+    document.getElementById('audio-sentence').textContent = `Correct answer: ${row.prompt}`;
     if (!session.failed && run === audioRun) next();
   };
   try {
@@ -118,6 +120,11 @@ function startAudioQuiz() {
       utterance.lang = 'es-ES';
       utterance.rate = 0.85;
       audioPlayback = utterance;
+      utterance.onstart = () => {
+        if (run !== audioRun || audioPlayback !== utterance) return;
+        document.getElementById('audio-sentence').lang = 'es';
+        document.getElementById('audio-sentence').textContent = row.answer;
+      };
       utterance.onend = () => {
         if (run !== audioRun || audioPlayback !== utterance) return;
         audioPlayback = null;
