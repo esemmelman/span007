@@ -149,6 +149,7 @@ function showLesson(lesson) {
   if (['rules', 'conjugations', 'conjugation-quiz', 'audio'].includes(lesson) && !quizPassed) return;
   cancelAdvance();
   stopAudioActivity();
+  document.body.classList.toggle('audio-mode', lesson === 'audio');
   const isQuiz = lesson === 'quiz' || lesson === 'conjugation-quiz';
   for (const name of ['definitions', 'quiz', 'rules', 'conjugations', 'audio']) {
     const active = name === 'quiz' ? isQuiz : name === lesson;
