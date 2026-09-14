@@ -82,7 +82,14 @@ function recordAudioAnswer(row, run, next) {
     row.transcript = session.transcript;
     document.getElementById('audio-sentence').lang = 'en';
     document.getElementById('audio-sentence').textContent = `Correct answer: ${row.prompt}`;
-    if (!session.failed && run === audioRun) next();
+    if (!session.failed && run === audioRun) {
+      // Leave time to read the answer before the black pause.
+      audioDelay = setTimeout(() => {
+        if (run !== audioRun) return;
+        document.getElementById('audio-sentence').textContent = '';
+        next(1500);
+      }, 3000);
+    }
   };
   try {
     recognition.start();
@@ -106,7 +113,7 @@ function startAudioQuiz() {
   const bank = Array.from(new Map(shuffled(conjugationQuestions).map(question => [question.prompt, question])).values());
   audioRows = shuffled(bank).slice(0, 10);
   let index = 0;
-  const next = () => {
+  const next = (delay = 3000) => {
     if (run !== audioRun) return;
     if (index === audioRows.length) {
       announceAudioStatus('Audio practice complete. Press Escape to return to lessons.');
@@ -136,7 +143,7 @@ function startAudioQuiz() {
         announceAudioStatus('Playback failed. Press Escape to return to lessons.');
       };
       window.speechSynthesis.speak(utterance);
-    }, 3000);
+    }, delay);
   };
   next();
 }
