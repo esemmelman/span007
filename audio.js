@@ -92,6 +92,7 @@ function startAudioQuiz() {
   stopAudioActivity();
   const run = audioRun;
   document.getElementById('audio-questions').replaceChildren();
+  document.getElementById('audio-sentence').textContent = '';
   announceAudioStatus('Audio practice. Press Escape to return to lessons.');
   document.getElementById('audio').focus();
   if (!window.speechSynthesis || !SpeechRecognitionAPI) {
@@ -108,6 +109,7 @@ function startAudioQuiz() {
       return;
     }
     const row = audioRows[index++];
+    document.getElementById('audio-sentence').textContent = '';
     audioDelay = setTimeout(() => {
       if (run !== audioRun) return;
       const utterance = new SpeechSynthesisUtterance(row.answer);
@@ -117,6 +119,7 @@ function startAudioQuiz() {
       utterance.onend = () => {
         if (run !== audioRun || audioPlayback !== utterance) return;
         audioPlayback = null;
+        document.getElementById('audio-sentence').textContent = row.answer;
         recordAudioAnswer(row, run, next);
       };
       utterance.onerror = () => {
