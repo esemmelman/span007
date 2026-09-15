@@ -65,7 +65,7 @@ function recordAudioAnswer(row, run, next) {
   };
   recognition.onstart = () => {
     if (audioSession !== session) return;
-    session.timer = setTimeout(stop, 10000);
+    session.timer = setTimeout(stop, 11000);
   };
   recognition.onspeechstart = () => {
     if (audioSession !== session) return;
@@ -103,7 +103,7 @@ function recordAudioAnswer(row, run, next) {
         if (run !== audioRun) return;
         clearAudioText();
         next(1500);
-      }, 2500);
+      }, 3500);
     }
   };
   try {
@@ -130,7 +130,7 @@ function startAudioQuiz() {
   const bank = availableAudioQuestions();
   audioRows = shuffled(bank).slice(0, 10);
   let index = 0;
-  const next = (delay = 3000) => {
+  const next = (delay = 1500) => {
     if (run !== audioRun) return;
     if (index === audioRows.length) {
       announceAudioStatus('Audio practice complete. Press Escape to return to lessons.');
