@@ -173,7 +173,7 @@ function showLesson(lesson) {
     document.getElementById('quiz').setAttribute('aria-label', lesson === 'quiz' ? '2. Quiz: Definitions' : '5. Quiz: Conjugations');
     startQuiz();
   }
-  else if (lesson === 'audio') startAudioQuiz();
+  else if (lesson === 'audio') showAudioOptions();
   else if (lesson === 'rules') document.getElementById('rules-title').focus();
   else if (lesson === 'conjugations') document.getElementById('conjugations').focus();
   else document.getElementById('main-content').focus();

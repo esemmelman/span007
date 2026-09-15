@@ -4,6 +4,19 @@ let audioPlayback = null;
 let audioDelay = null;
 let audioRun = 0;
 let audioRows = [];
+let audioDirection = 'es-en';
+
+function showAudioOptions() {
+  stopAudioActivity();
+  clearAudioText();
+  audioDirection = 'es-en';
+  document.getElementById('audio-options').hidden = false;
+  document.getElementById('audio-restart').hidden = true;
+  document.getElementById('audio-complete').hidden = true;
+  document.getElementById('audio-spanish-english').setAttribute('aria-pressed', 'true');
+  document.getElementById('audio-english-spanish').setAttribute('aria-pressed', 'false');
+  document.getElementById('audio-spanish-english').focus();
+}
 const usedAudioSentences = new Set();
 try {
   const saved = JSON.parse(localStorage.getItem('spanish-audio-used') || '[]');
@@ -46,7 +59,9 @@ function recordAudioAnswer(row, run, next) {
   const recognition = new SpeechRecognitionAPI();
   const session = { recognition, transcript: '', stopping: false, startedSpeaking: false };
   audioSession = session;
-  recognition.lang = 'en-US';
+  recognition.lang = audioDirection === 'es-en' ? 'en-US' : 'es-ES';
+  document.getElementById('audio-transcript').lang = recognition.lang;
+  document.getElementById('audio-answer').lang = recognition.lang;
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
@@ -96,7 +111,7 @@ function recordAudioAnswer(row, run, next) {
     clearTimeout(session.silenceTimer);
     audioSession = null;
     row.transcript = session.transcript;
-    document.getElementById('audio-answer').textContent = row.prompt;
+    document.getElementById('audio-answer').textContent = audioDirection === 'es-en' ? row.prompt : row.answer;
     if (!session.failed && run === audioRun) {
       // Leave time to read the answer before the black pause.
       audioDelay = setTimeout(() => {
@@ -117,6 +132,7 @@ function recordAudioAnswer(row, run, next) {
 function startAudioQuiz() {
   stopAudioActivity();
   const run = audioRun;
+  document.getElementById('audio-options').hidden = true;
   document.getElementById('audio-questions').replaceChildren();
   clearAudioText();
   document.getElementById('audio-restart').hidden = true;
@@ -147,8 +163,8 @@ function startAudioQuiz() {
     audioDelay = setTimeout(() => {
       if (run !== audioRun) return;
       clearAudioText();
-      const utterance = new SpeechSynthesisUtterance(row.answer);
-      utterance.lang = 'es-ES';
+      const utterance = new SpeechSynthesisUtterance(audioDirection === 'es-en' ? row.answer : row.prompt);
+      utterance.lang = audioDirection === 'es-en' ? 'es-ES' : 'en-US';
       utterance.rate = 0.85;
       audioPlayback = utterance;
       utterance.onstart = () => {
@@ -157,8 +173,8 @@ function startAudioQuiz() {
         try {
           localStorage.setItem('spanish-audio-used', JSON.stringify([...usedAudioSentences]));
         } catch (_) { /* In-memory history still prevents repeats during this visit. */ }
-        document.getElementById('audio-sentence').lang = 'es';
-        document.getElementById('audio-sentence').textContent = row.answer;
+        document.getElementById('audio-sentence').lang = utterance.lang;
+        document.getElementById('audio-sentence').textContent = utterance.text;
       };
       utterance.onend = () => {
         if (run !== audioRun || audioPlayback !== utterance) return;
@@ -183,3 +199,9 @@ window.addEventListener('keydown', event => {
 });
 window.addEventListener('pagehide', stopAudioActivity);
 document.getElementById('audio-restart').addEventListener('click', startAudioQuiz);
+for (const [id, direction] of [['audio-spanish-english', 'es-en'], ['audio-english-spanish', 'en-es']]) {
+  document.getElementById(id).addEventListener('click', () => {
+    audioDirection = direction;
+    startAudioQuiz();
+  });
+}

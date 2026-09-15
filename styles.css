@@ -104,6 +104,10 @@ body.audio-mode #audio{min-height:100dvh;display:grid;place-items:center;margin:
 body.audio-mode #audio > :not(#audio-text){position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 body.audio-mode #audio-text{width:100%;max-width:100%;font-size:calc(var(--verb-size) * 1.3);font-weight:700;text-align:center;overflow-wrap:anywhere}
 body.audio-mode #audio-restart{margin-top:24px;font-size:inherit;padding:24px 48px;min-height:90px;max-width:100%}
+body.audio-mode #audio-options{display:flex;flex-direction:column;align-items:center;gap:24px}
+body.audio-mode #audio-options button{font-size:clamp(1.25rem,3vw,2.2rem);padding:24px;max-width:100%}
+body.audio-mode #audio-options button[aria-pressed=true]{border-color:#fff;outline:2px solid #fff;outline-offset:4px}
+body.audio-mode #audio-text:has(#audio-options:not([hidden])) > p:empty{display:none}
 body.audio-mode #audio-text:has(#audio-restart:not([hidden]),#audio-complete:not([hidden])) > p:empty{display:none}
 body.audio-mode #audio-text p{margin:0;min-height:1.5em}
 body.audio-mode #audio-text p + p{margin-top:24px}
