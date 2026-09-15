@@ -103,7 +103,7 @@ function recordAudioAnswer(row, run, next) {
         if (run !== audioRun) return;
         clearAudioText();
         next(1500);
-      }, 1500);
+      }, 2500);
     }
   };
   try {
